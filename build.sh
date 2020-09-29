@@ -17,6 +17,7 @@ function parse_parameters() {
             *config) CONFIG=${1} ;;
             */ | *.i | *.ko | *.o | vmlinux | zImage | modules) MY_TARGETS=("${MY_TARGETS[@]}" "${1}") ;;
             *=*) export "${1?}" ;;
+            -d | --debug) DEBUG_INFO=true ;;
             -i | --incremental) INCREMENTAL=true ;;
             -j | --jobs) JOBS=${1} ;;
             -k | --kernel-src) shift && KERNEL_SRC=$(readlink -f "${1}") ;;
@@ -118,6 +119,12 @@ function kmake() {
     set +x
 }
 
+function debug_info() {
+    set -x
+    ${DEBUG_INFO:=false} || scripts/config --file "${O}"/.config -d CONFIG_DEBUG_INFO
+    set +x
+}
+
 function build_kernel() {
     # Build silently by default
     ${VERBOSE:=false} || SILENT_MAKE_FLAG=s
@@ -128,11 +135,13 @@ function build_kernel() {
 
     # Build list of build targets
     ${UPDATE_CONFIG_ONLY:=false} && FINAL_MAKE_TARGETS=(savedefconfig)
-    [[ -z ${FINAL_MAKE_TARGETS[*]} ]] && FINAL_MAKE_TARGETS=("${MY_TARGETS[@]}")
+    [[ -z ${FINAL_MAKE_TARGETS[*]} ]] && FINAL_MAKE_TARGETS=(olddefconfig "${MY_TARGETS[@]}")
 
     # Build the kernel with targets
     rm -rf "${O}"/rootfs
-    kmake "${CONFIG_MAKE_TARGETS[@]}" "${FINAL_MAKE_TARGETS[@]}"
+    kmake "${CONFIG_MAKE_TARGETS[@]}"
+    debug_info
+    kmake "${FINAL_MAKE_TARGETS[@]}"
 
     # Copy over new config if needed
     if ${UPDATE_CONFIG_ONLY}; then
