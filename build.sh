@@ -21,6 +21,7 @@ function parse_parameters() {
             -i | --incremental) INCREMENTAL=true ;;
             -j | --jobs) JOBS=${1} ;;
             -k | --kernel-src) shift && KERNEL_SRC=$(readlink -f "${1}") ;;
+            -n | --no-hardening) NO_HARDENING=true ;;
             -u | --update-config-only) UPDATE_CONFIG_ONLY=true ;;
             -v | --verbose) VERBOSE=true ;;
         esac
@@ -119,6 +120,12 @@ function kmake() {
     set +x
 }
 
+function clang_hardening() {
+    set -x
+    ${NO_HARDENING:=false} || scripts/config --file "${O}"/.config -e SHADOW_CALL_STACK -d LTO_NONE -e LTO_CLANG -e CFI_CLANG
+    set +x
+}
+
 function debug_info() {
     set -x
     ${DEBUG_INFO:=false} || scripts/config --file "${O}"/.config -d CONFIG_DEBUG_INFO
@@ -135,11 +142,13 @@ function build_kernel() {
 
     # Build list of build targets
     ${UPDATE_CONFIG_ONLY:=false} && FINAL_MAKE_TARGETS=(savedefconfig)
-    [[ -z ${FINAL_MAKE_TARGETS[*]} ]] && FINAL_MAKE_TARGETS=(olddefconfig "${MY_TARGETS[@]}")
+    [[ -z ${FINAL_MAKE_TARGETS[*]} ]] && FINAL_MAKE_TARGETS=("${MY_TARGETS[@]}")
+    FINAL_MAKE_TARGETS=(olddefconfig "${FINAL_MAKE_TARGETS[@]}")
 
     # Build the kernel with targets
     rm -rf "${O}"/rootfs
     kmake "${CONFIG_MAKE_TARGETS[@]}"
+    clang_hardening
     debug_info
     kmake "${FINAL_MAKE_TARGETS[@]}"
 
