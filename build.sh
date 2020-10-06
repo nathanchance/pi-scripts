@@ -154,7 +154,7 @@ function build_kernel() {
 
     # Copy over new config if needed
     if ${UPDATE_CONFIG_ONLY}; then
-        cp -v "${O}"/defconfig "${KERNEL_SRC}"/${CONFIG}
+        cp -v "${O}"/defconfig "${KERNEL_SRC}"/"${CONFIG}"
         exit 0
     fi
 
