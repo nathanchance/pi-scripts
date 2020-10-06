@@ -122,13 +122,13 @@ function kmake() {
 
 function clang_hardening() {
     set -x
-    ${NO_HARDENING:=false} || scripts/config --file "${O}"/.config -e SHADOW_CALL_STACK -d LTO_NONE -e LTO_CLANG -e CFI_CLANG
+    ${NO_HARDENING:=false} || "${KERNEL_SRC}"/scripts/config --file "${O}"/.config -e SHADOW_CALL_STACK -d LTO_NONE -e LTO_CLANG -e CFI_CLANG
     set +x
 }
 
 function debug_info() {
     set -x
-    ${DEBUG_INFO:=false} || scripts/config --file "${O}"/.config -d CONFIG_DEBUG_INFO
+    ${DEBUG_INFO:=false} || "${KERNEL_SRC}"/scripts/config --file "${O}"/.config -d CONFIG_DEBUG_INFO
     set +x
 }
 
