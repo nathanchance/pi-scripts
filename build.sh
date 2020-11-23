@@ -122,7 +122,13 @@ function kmake() {
 
 function clang_hardening() {
     set -x
-    ${NO_HARDENING:=false} || "${KERNEL_SRC}"/scripts/config --file "${O}"/.config -e SHADOW_CALL_STACK -d LTO_NONE -e LTO_CLANG -e CFI_CLANG
+    ${NO_HARDENING:=false} || "${KERNEL_SRC}"/scripts/config \
+        --file "${O}"/.config \
+        -e SHADOW_CALL_STACK \
+        -d LTO_NONE \
+        -e LTO_CLANG \
+        -e LTO_CLANG_THIN \
+        -e CFI_CLANG
     set +x
 }
 
