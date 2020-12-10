@@ -72,6 +72,7 @@ function set_toolchain() {
         "${HOSTLDFLAGS:=-fuse-ld=lld}" \
         "${JOBS:="$(nproc)"}" \
         "${LD:=ld.lld}" \
+        "${LLVM:=1}" \
         "${LLVM_IAS:=1}" \
         "${NM:=llvm-nm}" \
         "${O:=${KERNEL_SRC}/out/${ARCH}}" \
@@ -107,6 +108,7 @@ function kmake() {
         INSTALL_MOD_PATH=rootfs \
         KCFLAGS="${KCFLAGS--Werror}" \
         LD="${LD}" \
+        LLVM="${LLVM}" \
         LLVM_IAS="${LLVM_IAS}" \
         NM="${NM}" \
         O="$(realpath -m --relative-to="${KERNEL_SRC}" "${O}")" \
