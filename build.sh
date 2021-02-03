@@ -47,6 +47,7 @@ function parse_parameters() {
             CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
             CONFIG=arch/arm64/configs/${CONFIG:-defconfig}
             KERNEL_IMAGE=Image
+            LLVM_IAS=1
             ;;
 
         *) die "\${ARCH} value of '${ARCH}' is not supported!" ;;
@@ -88,7 +89,7 @@ function kmake() {
         KCFLAGS="${KCFLAGS--Werror}" \
         ${LD:+LD="${LD}"} \
         LLVM="${LLVM:=1}" \
-        LLVM_IAS="${LLVM_IAS:=1}" \
+        ${LLVM_IAS:+LLVM_IAS="${LLVM_IAS}"} \
         ${NM:+NM="${NM}"} \
         O="$(realpath -m --relative-to="${KERNEL_SRC}" "${O}")" \
         ${OBJCOPY:+OBJCOPY="${OBJCOPY}"} \
