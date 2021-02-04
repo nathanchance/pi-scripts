@@ -38,7 +38,8 @@ function parse_parameters() {
     case ${ARCH:=arm64} in
         arm)
             CROSS_COMPILE=arm-linux-gnueabi-
-            CONFIG=arch/arm/configs/${CONFIG:-bcm2709_defconfig}
+            [[ -f ${KERNEL_SRC}/arch/arm/configs/bcm2709_defconfig ]] && CONFIG=bcm2709_defconfig
+            CONFIG=arch/arm/configs/${CONFIG:-multi_v7_defconfig}
             KERNEL_IMAGE=zImage
             ;;
 
