@@ -64,7 +64,7 @@ function set_toolchain() {
     CCACHE=$(command -v ccache)
 
     # Resolve O=
-    O=$(readlink -f -m "${O:=${KERNEL_SRC}/out/${ARCH}}")
+    O=$(readlink -f -m "${O:=${KERNEL_SRC}/build/${ARCH}}")
 
     : "${CC:=clang}"
     printf '\n\e[01;32mToolchain location:\e[0m %s\n\n' "$(dirname "$(command -v "${CC##* }")")"
