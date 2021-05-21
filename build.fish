@@ -41,7 +41,7 @@ switch $arch
            ARCH=arm \
            CROSS_COMPILE=arm-linux-gnueabi- \
            $common_make_args \
-           distclean defconfig all dtbs_install modules_install
+           distclean defconfig all dtbs_install modules_install; or exit
 
         set kernel_image zImage
 
@@ -52,7 +52,7 @@ switch $arch
            kmake \
            $arch_make_args \
            $common_make_args \
-           distclean defconfig
+           distclean defconfig; or exit
 
         set fish_trace 1
         $krnl_src/scripts/config \
@@ -68,7 +68,7 @@ switch $arch
            kmake \
            $arch_make_args \
            $common_make_args \
-           olddefconfig all dtbs_install modules_install
+           olddefconfig all dtbs_install modules_install; or exit
 
         set kernel_image Image
 end
