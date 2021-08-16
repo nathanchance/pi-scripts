@@ -18,7 +18,7 @@ if not set -q krnl_src
     set krnl_src (realpath $PWD)
 end
 
-set out build/$arch
+set out .build/$arch
 set full_out $krnl_src/$out
 
 set common_make_args \
