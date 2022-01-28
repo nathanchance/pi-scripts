@@ -26,6 +26,7 @@ set common_make_args \
     HOSTLDFLAGS=-fuse-ld=lld \
     INSTALL_DTBS_PATH=rootfs \
     INSTALL_MOD_PATH=rootfs \
+    INSTALL_MOD_STRIP=1 \
     KCFLAGS=-Werror \
     LLVM=1 \
     LLVM_IAS=1 \
@@ -49,7 +50,7 @@ end
 PO="$path_overrides" kmake \
     $arch_make_args \
     $common_make_args \
-    distclean defconfig all dtbs_install_modules_install; or exit
+    distclean defconfig all dtbs_install modules_install; or exit
 
 set kernel $full_out/arch/$arch/boot/$kernel_image
 if test -f $kernel
