@@ -14,6 +14,10 @@ set bin_folder (status dirname)/bin
 
 set --path path_overrides $bin_folder/$arch $bin_folder/host
 
+if set -q PO
+    set -p path_overrides $PO
+end
+
 if not set -q krnl_src
     set krnl_src (realpath $PWD)
 end
