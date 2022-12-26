@@ -10,12 +10,12 @@ for arg in $argv
     end
 end
 
-set bin_folder (status dirname)/bin
+set bin_folder (realpath (status dirname))/bin
 
-set --path path_overrides $bin_folder/$arch $bin_folder/host
+set path_overrides $bin_folder/$arch $bin_folder/host
 
 if set -q PO
-    set -p path_overrides $PO
+    set -p path_overrides (string split : $PO)
 end
 
 if not set -q krnl_src
@@ -45,9 +45,10 @@ switch $arch
         set kernel_image Image
 end
 
-PO="$path_overrides" kmake \
-    $arch_make_args \
+kmake \
+    --prepend-to-path=$path_overrides \
     $common_make_args \
+    $arch_make_args \
     defconfig tarzst-pkg; or exit
 
 set kernel $full_out/arch/$arch/boot/$kernel_image
