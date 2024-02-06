@@ -22,8 +22,7 @@ if not set -q krnl_src
     set krnl_src (realpath $PWD)
 end
 
-set out .build/$arch
-set full_out $krnl_src/$out
+set out (tbf $krnl_src)/$arch
 
 set common_make_args \
     -C $krnl_src \
@@ -31,16 +30,16 @@ set common_make_args \
     LLVM=1 \
     O=$out
 
-rm -rf $full_out
+rm -rf $out
 
 switch $arch
     case arm
-        set arch_make_args ARCH=arm CROSS_COMPILE=arm-linux-gnueabi-
+        set arch_make_args ARCH=arm
 
         set kernel_image zImage
 
     case arm64
-        set arch_make_args ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+        set arch_make_args ARCH=arm64
 
         set kernel_image Image
 end
@@ -51,7 +50,7 @@ kmake \
     $arch_make_args \
     defconfig tarzst-pkg; or exit
 
-set kernel $full_out/arch/$arch/boot/$kernel_image
+set kernel $out/arch/$arch/boot/$kernel_image
 if test -f $kernel
     printf '\n\e[01;32mKernel is now available at:\e[0m %s\n' $kernel
 end
